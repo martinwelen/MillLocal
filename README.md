@@ -182,6 +182,29 @@ If you wanted to add German, you'd create `translations/de.json`:
 - Entity names should match what users would expect to see in their language's Home Assistant UI
 - Test your translation by placing the file in `custom_components/mill_local/translations/` and setting HA to your language
 
+## Other Mill Gen 3 Devices
+
+This integration has been tested with **Convection Heaters** (regular and Max models). The Mill Gen 3 local API also supports other device types that should work but have not been verified:
+
+| Device Type | Status | Notes |
+|-------------|--------|-------|
+| Convection Heater | **Tested** | Full support |
+| Convection Heater Max | **Tested** | Full support including power limits |
+| Panel Heater | Untested | Likely works — shares the same API endpoints |
+| Oil Heater | Untested | Has a unique power level endpoint (40/60/100%) not yet exposed |
+| Wi-Fi Socket | Untested | Has a unique socket mode endpoint not yet exposed |
+
+### Help us support more devices
+
+If you own a Mill Gen 3 **panel heater**, **oil heater**, or **Wi-Fi socket**, we'd love your help! Please [open an issue](../../issues/new) with the output of these two commands (replace the IP with your device's IP):
+
+```bash
+curl http://<YOUR_HEATER_IP>/status
+curl http://<YOUR_HEATER_IP>/control-status
+```
+
+This tells us the exact device name string and response format, which helps us add proper support for your device type.
+
 ## Known Limitations
 
 - **No authentication:** The local API uses plain HTTP with no authentication. Anyone on your local network can control the heaters. The API supports setting an API key which enables HTTPS, but this is irreversible without a factory reset and is not supported by this integration.

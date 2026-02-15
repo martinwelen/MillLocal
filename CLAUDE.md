@@ -147,6 +147,7 @@ MillLocal/
 - [ ] **PID parameter entities:** Add number entities for PID kp/ki/kd tuning on Max models
 - [ ] **Service descriptions in strings.json:** Add translated descriptions for set_vacation_mode, set_weekly_program, reboot services
 - [ ] **Test coverage:** Reconfigure flow, energy sensor restore, edge cases
+- [ ] **Broader device support:** Expand feature detection to probe `/oil-heater-power` and `/additional-socket-mode` at setup. Add oil heater power number entity (40/60/100%) and socket mode select entity (0-4). Make integration fully device-type-agnostic — detect capabilities by probing, not by name matching. Panel heaters likely already work since they share endpoints with the Max convector. Needs community testing with real devices.
 - [ ] **Auto-discovery (DHCP):** Investigate DHCP-based discovery using Espressif MAC prefixes (`10:06:1C`, `08:F9:E0`) in `manifest.json`
 - [ ] **Auto-discovery (subnet scan):** Add a "Scan network" button in the config flow that scans HA's local subnet for Mill heaters
 - [ ] **Auto-discovery (custom range scan):** Allow user to enter a subnet or IP range to scan for Mill heaters
