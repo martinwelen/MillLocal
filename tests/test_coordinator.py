@@ -13,7 +13,7 @@ from tests.conftest import MOCK_CONTROL_STATUS, mock_config_entry_data
 @pytest.fixture(autouse=True)
 def patch_ha_internals():
     """Patch HA internals that require runtime setup."""
-    with patch("homeassistant.helpers.frame._hass", MagicMock()):
+    with patch("homeassistant.helpers.frame._hass", MagicMock(), create=True):
         yield
 
 
