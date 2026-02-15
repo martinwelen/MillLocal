@@ -1,14 +1,12 @@
 """Tests for Mill Local API client."""
 
-import asyncio
-import json
 
 import aiohttp
 import pytest
 from aioresponses import aioresponses
 from yarl import URL
 
-from custom_components.mill_local.api import CannotConnect, MillLocalAPI
+from custom_components.mill_local.api import CannotConnectError, MillLocalAPI
 from tests.conftest import (
     MOCK_CALIBRATION_OFFSET,
     MOCK_CHILD_LOCK,
@@ -23,8 +21,6 @@ from tests.conftest import (
     MOCK_PID_PARAMETERS,
     MOCK_PREDICTIVE_HEATING,
     MOCK_STATUS,
-    MOCK_VACATION_MODE,
-    MOCK_WEEKLY_PROGRAM,
 )
 
 BASE_URL = f"http://{MOCK_HOST}"
@@ -47,20 +43,20 @@ class TestGetStatus:
 
     async def test_timeout(self, api_client):
         with aioresponses() as m:
-            m.get(f"{BASE_URL}/status", exception=asyncio.TimeoutError())
-            with pytest.raises(CannotConnect):
+            m.get(f"{BASE_URL}/status", exception=TimeoutError())
+            with pytest.raises(CannotConnectError):
                 await api_client.get_status()
 
     async def test_connection_error(self, api_client):
         with aioresponses() as m:
             m.get(f"{BASE_URL}/status", exception=aiohttp.ClientError())
-            with pytest.raises(CannotConnect):
+            with pytest.raises(CannotConnectError):
                 await api_client.get_status()
 
     async def test_bad_json(self, api_client):
         with aioresponses() as m:
             m.get(f"{BASE_URL}/status", body="not json", content_type="text/plain")
-            with pytest.raises(CannotConnect):
+            with pytest.raises(CannotConnectError):
                 await api_client.get_status()
 
 
@@ -75,8 +71,8 @@ class TestGetControlStatus:
 
     async def test_timeout(self, api_client):
         with aioresponses() as m:
-            m.get(f"{BASE_URL}/control-status", exception=asyncio.TimeoutError())
-            with pytest.raises(CannotConnect):
+            m.get(f"{BASE_URL}/control-status", exception=TimeoutError())
+            with pytest.raises(CannotConnectError):
                 await api_client.get_control_status()
 
 
@@ -203,8 +199,8 @@ class TestWrites:
 
     async def test_set_fails_on_timeout(self, api_client):
         with aioresponses() as m:
-            m.post(f"{BASE_URL}/child-lock", exception=asyncio.TimeoutError())
-            with pytest.raises(CannotConnect):
+            m.post(f"{BASE_URL}/child-lock", exception=TimeoutError())
+            with pytest.raises(CannotConnectError):
                 await api_client.set_child_lock(True)
 
 

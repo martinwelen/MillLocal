@@ -1,17 +1,12 @@
 """Shared test fixtures for Mill Local tests."""
 
-from unittest.mock import AsyncMock, MagicMock, patch
 
-import pytest
 
 from custom_components.mill_local.const import (
     CONF_FIRMWARE,
     CONF_MAC_ADDRESS,
     CONF_MODEL,
     CONF_SUPPORTED_FEATURES,
-    DOMAIN,
-    FEATURE_LIMITED_HEATING_POWER,
-    FEATURE_PID_PARAMETERS,
 )
 
 MOCK_HOST = "192.168.1.100"

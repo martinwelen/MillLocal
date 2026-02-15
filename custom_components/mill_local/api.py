@@ -19,7 +19,7 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 
-class CannotConnect(Exception):
+class CannotConnectError(Exception):
     """Error to indicate we cannot connect to the device."""
 
 
@@ -44,16 +44,16 @@ class MillLocalAPI:
         """Make HTTP request to the heater.
 
         Returns parsed JSON dict on success, None if endpoint not found.
-        Raises CannotConnect on network/timeout errors.
+        Raises CannotConnectError on network/timeout errors.
         """
         url = f"{self._base_url}{endpoint}"
         try:
             async with asyncio.timeout(DEFAULT_TIMEOUT):
                 resp = await self._session.request(method, url, json=json_data)
-        except asyncio.TimeoutError as err:
-            raise CannotConnect(f"Timeout connecting to {self._host}") from err
+        except TimeoutError as err:
+            raise CannotConnectError(f"Timeout connecting to {self._host}") from err
         except aiohttp.ClientError as err:
-            raise CannotConnect(f"Error connecting to {self._host}: {err}") from err
+            raise CannotConnectError(f"Error connecting to {self._host}: {err}") from err
 
         if resp.status == 404:
             return None
@@ -61,7 +61,7 @@ class MillLocalAPI:
         try:
             text = await resp.text()
         except Exception as err:
-            raise CannotConnect(
+            raise CannotConnectError(
                 f"Error reading response from {self._host}: {err}"
             ) from err
 
@@ -81,17 +81,17 @@ class MillLocalAPI:
     # -- Core reads (used by coordinator) --
 
     async def get_status(self) -> dict[str, Any]:
-        """Get device status. Raises CannotConnect on failure."""
+        """Get device status. Raises CannotConnectError on failure."""
         data = await self._request("GET", "/status")
         if not self._check_ok(data):
-            raise CannotConnect(f"Invalid status response from {self._host}")
+            raise CannotConnectError(f"Invalid status response from {self._host}")
         return data
 
     async def get_control_status(self) -> dict[str, Any]:
-        """Get control status. Raises CannotConnect on failure."""
+        """Get control status. Raises CannotConnectError on failure."""
         data = await self._request("GET", "/control-status")
         if not self._check_ok(data):
-            raise CannotConnect(f"Invalid control-status response from {self._host}")
+            raise CannotConnectError(f"Invalid control-status response from {self._host}")
         return data
 
     # -- Config reads (on-demand, return None on failure) --
@@ -300,7 +300,7 @@ class MillLocalAPI:
             async with asyncio.timeout(DEFAULT_TIMEOUT):
                 await self._session.post(f"{self._base_url}/reboot")
             return True
-        except (asyncio.TimeoutError, aiohttp.ClientError):
+        except (TimeoutError, aiohttp.ClientError):
             # Reboot may kill the connection before response -- that's OK
             return True
 
@@ -318,7 +318,7 @@ class MillLocalAPI:
                 data = await self._request("GET", endpoint)
                 if data is not None and data.get("status") == "ok":
                     features.add(feature)
-            except CannotConnect:
+            except CannotConnectError:
                 pass
 
         return features

@@ -2,19 +2,19 @@
 
 from __future__ import annotations
 
-from datetime import timedelta
 import logging
+from datetime import timedelta
 from typing import Any
 
-from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
 
-from .api import CannotConnect, MillLocalAPI
+from .api import CannotConnectError, MillLocalAPI
 from .const import (
     CONF_FIRMWARE,
     CONF_MAC_ADDRESS,
@@ -67,5 +67,5 @@ class MillLocalCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     async def _async_update_data(self) -> dict[str, Any]:
         try:
             return await self.api.get_control_status()
-        except CannotConnect as err:
+        except CannotConnectError as err:
             raise UpdateFailed(f"Error communicating with heater: {err}") from err

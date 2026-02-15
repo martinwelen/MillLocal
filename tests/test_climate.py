@@ -6,9 +6,7 @@ import pytest
 
 from custom_components.mill_local.climate import MillClimate
 from custom_components.mill_local.const import (
-    OPERATION_MODE_CONTROL,
     OPERATION_MODE_INDEPENDENT,
-    OPERATION_MODE_OFF,
     OPERATION_MODE_WEEKLY,
     PRESET_INDEPENDENT_DEVICE,
     PRESET_NONE,

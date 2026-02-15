@@ -6,12 +6,11 @@ import logging
 from typing import Any
 
 import voluptuous as vol
-
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_HOST, CONF_NAME
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .api import CannotConnect, MillLocalAPI
+from .api import CannotConnectError, MillLocalAPI
 from .const import (
     CONF_FIRMWARE,
     CONF_MAC_ADDRESS,
@@ -54,7 +53,7 @@ class MillLocalConfigFlow(ConfigFlow, domain=DOMAIN):
 
             try:
                 status = await api.get_status()
-            except CannotConnect:
+            except CannotConnectError:
                 errors["base"] = "cannot_connect"
             except Exception:
                 _LOGGER.exception("Unexpected error during config flow")
@@ -97,7 +96,7 @@ class MillLocalConfigFlow(ConfigFlow, domain=DOMAIN):
 
             try:
                 status = await api.get_status()
-            except CannotConnect:
+            except CannotConnectError:
                 errors["base"] = "cannot_connect"
             except Exception:
                 _LOGGER.exception("Unexpected error during reconfigure")

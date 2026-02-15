@@ -1,14 +1,12 @@
 """Tests for Mill Local coordinator."""
 
 import asyncio
-from datetime import timedelta
-from unittest.mock import AsyncMock, MagicMock, PropertyMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from custom_components.mill_local.api import CannotConnect
+from custom_components.mill_local.api import CannotConnectError
 from custom_components.mill_local.coordinator import MillLocalCoordinator
-from custom_components.mill_local.const import DOMAIN
 from tests.conftest import MOCK_CONTROL_STATUS, mock_config_entry_data
 
 
@@ -56,7 +54,7 @@ class TestCoordinator:
         mock_api.get_control_status.assert_called_once()
 
     async def test_update_failure_raises(self, mock_hass, mock_api, mock_entry):
-        mock_api.get_control_status.side_effect = CannotConnect("timeout")
+        mock_api.get_control_status.side_effect = CannotConnectError("timeout")
         coordinator = MillLocalCoordinator(mock_hass, mock_api, mock_entry)
         from homeassistant.helpers.update_coordinator import UpdateFailed
 

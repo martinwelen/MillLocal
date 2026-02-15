@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from custom_components.mill_local.switch import MillSwitch, SWITCH_DESCRIPTIONS
+from custom_components.mill_local.switch import SWITCH_DESCRIPTIONS, MillSwitch
 from tests.conftest import MOCK_CHILD_LOCK, MOCK_OPEN_WINDOW, mock_config_entry_data
 
 

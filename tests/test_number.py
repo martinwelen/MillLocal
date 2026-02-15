@@ -6,10 +6,8 @@ import pytest
 
 from custom_components.mill_local.number import (
     ALWAYS_AVAILABLE_DESCRIPTIONS,
-    OPTIONAL_DESCRIPTIONS,
     MillNumber,
 )
-from custom_components.mill_local.const import FEATURE_LIMITED_HEATING_POWER
 from tests.conftest import MOCK_CALIBRATION_OFFSET, MOCK_HYSTERESIS, mock_config_entry_data
 
 

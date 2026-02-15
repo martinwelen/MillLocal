@@ -2,10 +2,7 @@
 
 from unittest.mock import AsyncMock, patch
 
-import pytest
-
 from custom_components.mill_local.config_flow import MillLocalConfigFlow
-from custom_components.mill_local.const import DOMAIN
 from tests.conftest import MOCK_HOST, MOCK_STATUS
 
 
@@ -49,13 +46,13 @@ class TestConfigFlow:
 
     async def test_step_user_cannot_connect(self):
         """Test connection failure shows error."""
-        from custom_components.mill_local.api import CannotConnect
+        from custom_components.mill_local.api import CannotConnectError
 
         flow = MillLocalConfigFlow()
         flow.hass = AsyncMock()
 
         mock_api = AsyncMock()
-        mock_api.get_status = AsyncMock(side_effect=CannotConnect("timeout"))
+        mock_api.get_status = AsyncMock(side_effect=CannotConnectError("timeout"))
 
         with patch(
             "custom_components.mill_local.config_flow.MillLocalAPI",

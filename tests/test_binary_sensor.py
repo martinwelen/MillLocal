@@ -1,6 +1,5 @@
 """Tests for Mill Local binary sensor entities."""
 
-import pytest
 
 from custom_components.mill_local.binary_sensor import BINARY_SENSOR_DESCRIPTIONS
 from tests.conftest import MOCK_CONTROL_STATUS
