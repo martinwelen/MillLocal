@@ -1,0 +1,64 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add Mill Heater",
+        "description": "Enter the IP address of your Mill Gen 3 heater.",
+        "data": {
+          "host": "IP Address",
+          "name": "Name (optional)"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure Mill Heater",
+        "description": "Update the IP address for this heater.",
+        "data": {
+          "host": "IP Address"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the heater. Verify the IP address and that the heater is powered on.",
+      "different_device": "The device at this IP address is a different heater (different MAC address).",
+      "unknown": "An unexpected error occurred."
+    },
+    "abort": {
+      "already_configured": "This heater is already configured."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "current_power": { "name": "Current Power" },
+      "energy": { "name": "Energy" },
+      "control_signal": { "name": "Control Signal" },
+      "raw_temperature": { "name": "Raw Temperature" },
+      "calibration_offset": { "name": "Calibration Offset" },
+      "firmware_version": { "name": "Firmware Version" }
+    },
+    "binary_sensor": {
+      "open_window": { "name": "Open Window" },
+      "cloud_connected": { "name": "Cloud Connected" },
+      "heating": { "name": "Heating" }
+    },
+    "switch": {
+      "open_window_detection": { "name": "Open Window Detection" },
+      "child_lock": { "name": "Child Lock" },
+      "cloud_communication": { "name": "Cloud Communication" },
+      "commercial_lock": { "name": "Commercial Lock" }
+    },
+    "number": {
+      "calibration_offset": { "name": "Calibration Offset" },
+      "hysteresis_upper": { "name": "Hysteresis Upper" },
+      "hysteresis_lower": { "name": "Hysteresis Lower" },
+      "open_window_drop_threshold": { "name": "Open Window Drop Threshold" },
+      "open_window_max_time": { "name": "Open Window Max Time" },
+      "limited_heating_power": { "name": "Limited Heating Power" },
+      "max_heater_power": { "name": "Max Heater Power" }
+    },
+    "select": {
+      "predictive_heating": { "name": "Predictive Heating" },
+      "display_unit": { "name": "Display Unit" },
+      "controller_type": { "name": "Controller Type" }
+    }
+  }
+}
