@@ -1,0 +1,11 @@
+{
+  "domain": "mill_local",
+  "name": "Mill Heater (Local)",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/Mill-International-AS/Generation_3_REST_API",
+  "iot_class": "local_polling",
+  "requirements": [],
+  "version": "1.0.0"
+}
