@@ -1,0 +1,30 @@
+set_vacation_mode:
+  fields:
+    enabled:
+      required: true
+      selector:
+        boolean:
+    temperature:
+      selector:
+        number:
+          min: 5
+          max: 35
+          step: 0.5
+          unit_of_measurement: "°C"
+    start_timestamp:
+      selector:
+        number:
+          mode: box
+    end_timestamp:
+      selector:
+        number:
+          mode: box
+
+set_weekly_program:
+  fields:
+    timers:
+      required: true
+      selector:
+        object:
+
+reboot:

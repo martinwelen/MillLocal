@@ -1,0 +1,64 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Lägg till Mill-element",
+        "description": "Ange IP-adressen för ditt Mill Generation 3-element.",
+        "data": {
+          "host": "IP-adress",
+          "name": "Namn (valfritt)"
+        }
+      },
+      "reconfigure": {
+        "title": "Konfigurera om Mill-element",
+        "description": "Uppdatera IP-adressen för detta element.",
+        "data": {
+          "host": "IP-adress"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan inte ansluta till elementet. Kontrollera IP-adressen och att elementet är påslaget.",
+      "different_device": "Enheten på denna IP-adress är ett annat element (annan MAC-adress).",
+      "unknown": "Ett oväntat fel uppstod."
+    },
+    "abort": {
+      "already_configured": "Detta element är redan konfigurerat."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "current_power": { "name": "Aktuell effekt" },
+      "energy": { "name": "Energi" },
+      "control_signal": { "name": "Styrsignal" },
+      "raw_temperature": { "name": "Råtemperatur" },
+      "calibration_offset": { "name": "Kalibreringsoffset" },
+      "firmware_version": { "name": "Firmware-version" }
+    },
+    "binary_sensor": {
+      "open_window": { "name": "Öppet fönster" },
+      "cloud_connected": { "name": "Molnansluten" },
+      "heating": { "name": "Värmer" }
+    },
+    "switch": {
+      "open_window_detection": { "name": "Öppet fönster-detektering" },
+      "child_lock": { "name": "Barnlås" },
+      "cloud_communication": { "name": "Molnkommunikation" },
+      "commercial_lock": { "name": "Kommersiellt lås" }
+    },
+    "number": {
+      "calibration_offset": { "name": "Kalibreringsoffset" },
+      "hysteresis_upper": { "name": "Hysteres övre" },
+      "hysteresis_lower": { "name": "Hysteres undre" },
+      "open_window_drop_threshold": { "name": "Fönster temperatursänkningströskel" },
+      "open_window_max_time": { "name": "Fönster max tid" },
+      "limited_heating_power": { "name": "Begränsad värmeeffekt" },
+      "max_heater_power": { "name": "Max värmeeffekt" }
+    },
+    "select": {
+      "predictive_heating": { "name": "Prediktiv uppvärmning" },
+      "display_unit": { "name": "Displayenhet" },
+      "controller_type": { "name": "Regulatortyp" }
+    }
+  }
+}
