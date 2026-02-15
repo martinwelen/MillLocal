@@ -1,4 +1,4 @@
-# [Project Name]
+# Mill Local - Home Assistant Custom Integration
 
 This file provides context for Claude Code to understand this project and enforce development standards.
 
@@ -44,55 +44,109 @@ This file provides context for Claude Code to understand this project and enforc
 
 ## Project Overview
 
-**Purpose:** [Brief description of what this project does]
+**Purpose:** Custom Home Assistant integration for Mill Gen 3 heaters via local REST API (no cloud). HACS-compatible.
 
-**Tech Stack:** [Languages, frameworks, key libraries]
+**Tech Stack:** Python 3.12+, Home Assistant Core, aiohttp, pytest + pytest-asyncio + aioresponses, ruff
 
-**Repository:** [GitHub URL]
+**Repository:** https://github.com/martinwelen/MillLocal
 
 ## Project Structure
 
 ```
-project/
-├── src/              # Source code
-├── tests/            # Test files
-├── docs/             # Documentation
+MillLocal/
+├── custom_components/
+│   └── mill_local/
+│       ├── __init__.py          # Integration setup, platform forwarding
+│       ├── api.py               # REST API client for Mill heaters
+│       ├── climate.py           # Climate entity (HEAT/OFF, presets, services)
+│       ├── config_flow.py       # Config flow with device validation
+│       ├── const.py             # Constants, feature flags, mappings
+│       ├── coordinator.py       # DataUpdateCoordinator (polls /control-status)
+│       ├── binary_sensor.py     # Open window, cloud, heating status
+│       ├── sensor.py            # Power, temperature, energy, firmware
+│       ├── switch.py            # Child lock, commercial lock, cloud, open window
+│       ├── number.py            # Calibration, hysteresis, power limits
+│       ├── select.py            # Predictive heating, display unit, controller type
+│       ├── manifest.json        # HACS integration manifest
+│       ├── services.yaml        # Service definitions
+│       ├── strings.json         # English UI strings
+│       └── translations/
+│           ├── en.json          # English translations
+│           └── sv.json          # Swedish translations
+├── tests/
+│   ├── conftest.py              # Shared fixtures and mock data
+│   ├── test_api.py              # API client tests (28 tests)
+│   ├── test_coordinator.py      # Coordinator tests (4 tests)
+│   ├── test_config_flow.py      # Config flow tests (5 tests)
+│   ├── test_climate.py          # Climate entity tests (13 tests)
+│   ├── test_sensor.py           # Sensor tests (7 tests)
+│   ├── test_binary_sensor.py    # Binary sensor tests (6 tests)
+│   ├── test_switch.py           # Switch tests (5 tests)
+│   ├── test_number.py           # Number tests (5 tests)
+│   └── test_select.py          # Select tests (5 tests)
+├── docs/
+│   └── plans/                   # Design and implementation plans
 ├── .github/
 │   └── workflows/
-│       └── ci.yml    # CI pipeline
-├── CLAUDE.md         # This file
-└── README.md         # Project README
+│       └── ci.yml               # CI pipeline (pytest + ruff)
+├── pyproject.toml               # Project config (pytest, ruff)
+├── requirements_test.txt        # Test dependencies
+├── hacs.json                    # HACS metadata
+├── CLAUDE.md                    # This file
+└── README.md                    # Project README
 ```
 
 ## Key Files
 
 | File | Purpose |
 |------|---------|
-| `src/...` | [Describe key source files] |
-| `tests/...` | [Describe test organization] |
+| `custom_components/mill_local/api.py` | REST client — all GET/POST endpoints, feature detection, error handling |
+| `custom_components/mill_local/coordinator.py` | Polls `/control-status` every 15s, provides data to all entities |
+| `custom_components/mill_local/climate.py` | Main thermostat entity with HVAC modes, presets, and custom services |
+| `custom_components/mill_local/const.py` | All constants, feature flags, operation mode mappings |
+| `tests/conftest.py` | Mock API responses matching real heater data, shared fixtures |
 
 ## Testing
 
-**Run tests:** `[test command, e.g., npm test]`
+**Run tests:** `pytest tests/ -v` (from venv: `.venv/bin/python -m pytest tests/ -v`)
 
-**Test framework:** [Jest, pytest, etc.]
+**Lint:** `ruff check custom_components/ tests/`
 
-## Deployment
+**Test framework:** pytest + pytest-asyncio (async auto mode) + aioresponses for HTTP mocking
 
-```bash
-# [Deployment commands]
-```
+**Current coverage:** 78 tests across 10 test files
+
+## Architecture
+
+- **Entity pattern:** Config entities (switch, number, select) manage their own state — fetch initial value on `async_added_to_hass`, track writes locally, no coordinator dependency for their values.
+- **Coordinator entities:** Climate, sensor, binary sensor read from coordinator data (polled every 15s).
+- **Feature gating:** Optional entities (limited_heating_power, max_heater_power) are only created if the device supports them (detected at config flow time).
+- **Lambda pattern:** Entity descriptions use `get_fn=lambda api: api.method()` instead of unbound method references for testability with AsyncMock.
+- **Read-modify-write:** Hysteresis and open window settings use read-modify-write to preserve sibling fields.
 
 ## Conventions
 
-- [Code style conventions]
-- [Naming conventions]
-- [Commit message conventions]
+- **Code style:** ruff with rules E, F, I, N, UP, B, SIM, line-length 100
+- **Naming:** `CannotConnectError` (N818), snake_case for variables/functions, PascalCase for classes
+- **Commit messages:** Conventional commits (`feat:`, `fix:`, `style:`, `chore:`, `docs:`)
+- **Test organization:** One test file per source module, `TestClassName` grouping, `test_method_name` naming
 
 ## Key Learnings
 
-[Document important technical insights and solutions as you discover them]
+- Mill heaters return 404 as either HTTP 404 or plain text "Nothing matches the given URI" — both must be handled
+- `DataUpdateCoordinator.__init__` requires explicit `config_entry=entry` parameter in newer HA versions
+- aioresponses stores request keys as `("METHOD", yarl.URL(...))`, not plain strings
+- aiohttp JSON payloads are in `kwargs["json"]` not `kwargs["data"]`
+- Entity `async_write_ha_state()` requires `self.hass` to be set — mock it in unit tests
+- Lambda-based function references work with AsyncMock; unbound method references don't
+- Both regular convector and Max model run firmware `0x250317`
+- Max model supports extra endpoints: `/limited-heating-power`, `/pid-parameters`
 
 ## Backlog
 
-- [ ] [Future work items]
+- [ ] **PID parameter entities:** Add number entities for PID kp/ki/kd tuning on Max models
+- [ ] **Service descriptions in strings.json:** Add translated descriptions for set_vacation_mode, set_weekly_program, reboot services
+- [ ] **Test coverage:** Reconfigure flow, energy sensor restore, edge cases
+- [ ] **Auto-discovery (DHCP):** Investigate DHCP-based discovery using Espressif MAC prefixes (`10:06:1C`, `08:F9:E0`) in `manifest.json`
+- [ ] **Auto-discovery (subnet scan):** Add a "Scan network" button in the config flow that scans HA's local subnet for Mill heaters
+- [ ] **Auto-discovery (custom range scan):** Allow user to enter a subnet or IP range to scan for Mill heaters
