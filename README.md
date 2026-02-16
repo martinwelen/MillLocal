@@ -182,6 +182,28 @@ If you wanted to add German, you'd create `translations/de.json`:
 - Entity names should match what users would expect to see in their language's Home Assistant UI
 - Test your translation by placing the file in `custom_components/mill_local/translations/` and setting HA to your language
 
+## Help Us Support More Models
+
+This integration has been tested with the Mill Gen 3 Convection Heater and Convection Heater Max. If you have a different Mill heater model with local API support, you can help expand compatibility by sharing your device's status output.
+
+### How to contribute your model's data
+
+1. Open a terminal and run these commands against your heater's IP address:
+
+```bash
+curl http://<HEATER_IP>/status
+curl http://<HEATER_IP>/control-status
+curl http://<HEATER_IP>/limited-heating-power
+curl http://<HEATER_IP>/pid-parameters
+```
+
+2. [Open an issue](https://github.com/martinwelen/MillLocal/issues/new) with:
+   - Your heater's model name (from the label or the Mill app)
+   - The output of each command above (endpoints that return "Nothing matches the given URI" are fine — that just means your model doesn't support that feature)
+   - Any features or behaviors that differ from what's documented here
+
+This helps us verify compatibility and add support for models we don't have physical access to.
+
 ## Known Limitations
 
 - **No authentication:** The local API uses plain HTTP with no authentication. Anyone on your local network can control the heaters. The API supports setting an API key which enables HTTPS, but this is irreversible without a factory reset and is not supported by this integration.
